@@ -10,6 +10,7 @@ import java.util.regex.*;
 public class Genetic {
 	public static Map<Integer,Point> points; //map of points
 	public static Map<Integer,Map<Integer,Double>> edgeLengths; //map of edge lengths for all points
+	public static Random rnd = new Random();; //Random number
 
 	public static void main(String[] args) throws IOException {
 
@@ -80,12 +81,37 @@ public class Genetic {
 		}*/
 
 		//Create k-randomly generated states
-		int[] foo = shuffle(path);
-		/*for(int i = 0;i < foo.length; i++){
+		/*int[] foo = shuffle(path);
+		for(int i = 0;i < foo.length; i++){
 			System.out.print(foo[i] + " ");
 		}
 		System.out.println();*/
 
+		//Create 4 random sets of strings
+		List<int[]> populations = new ArrayList<int[]>();
+
+		//To prevent generating duplicate arrays, shuffle the previous generated path
+		//int[] prev = new int[points.size()];
+		for(int i = 0; i < 4; i++){
+			populations.add(shuffle(path));
+			/*try {
+				Thread.sleep(100);
+			}
+			catch(Exception e){}*/
+		}
+
+		/*for(int[] a : populations){
+			for(int i = 0;i < a.length; i++){
+				System.out.print(a[i] + " ");
+			}
+			System.out.println();
+		}*/
+
+		System.out.println(arrayToString(populations.get(0)));
+		System.out.println(arrayToString(populations.get(1)));
+		System.out.println(arrayToString(populations.get(2)));
+		System.out.println(arrayToString(populations.get(3)));
+		
 		
 		//need to define a cross over method
 
@@ -106,7 +132,7 @@ public class Genetic {
 	//fisher-yates algorithm to shuffle array
 	//this will be used to generate the k random populations needed for the start of the genetic algorithm
 	public static int[] shuffle (int[] arr) {
-		Random rnd = new Random();
+		rnd.setSeed(System.currentTimeMillis());
 		for(int i = arr.length - 1; i > 0; i--){
 			int index = rnd.nextInt(i + 1);
 			int a = arr[index];
@@ -120,7 +146,7 @@ public class Genetic {
 	/*public static void pathsEqual(int[] a, int[] b){
 		//String strA = 
 		int[] newA = 
-	}
+	}*/
 
 	public static String arrayToString (int[] a){
 		String str = "";
@@ -128,7 +154,8 @@ public class Genetic {
 			str += a[i]+"-";
 		}
 		return str;
-	}*/
+	}
+
 }
 
 //Object used to represent a single point
@@ -148,5 +175,11 @@ class Point {
 	//needed when converting a number to a letter and vise versa
 	void setName(int a) {
 		this.name = a;
+	}
+}
+
+class Path {
+	Path(){
+
 	}
 }
