@@ -107,33 +107,47 @@ public class Genetic {
 		}
 
 		//order the lPaths array in order to find the best parents
-		ArrayList<Path> orderPaths = new ArrayList<Path>();
-		while(lPaths.size() > 0){
-			int indexShortest = -1;
-			double disShortest = Double.MAX_VALUE;
-			for(int i = 0; i < lPaths.size(); i++){
-				if(lPaths.get(i).dist < disShortest){
-					indexShortest = i;
-					disShortest = lPaths.get(i).dist;
-				}
-			}
-			orderPaths.add(lPaths.get(indexShortest));
-			lPaths.remove(indexShortest);
-		}
+		//lpaths will now be empty
+		ArrayList<Path> orderPaths = sortPathList(lPaths);
 
 		//Print to check if paths are different and inder from smallest to greatest
+		
 		for(Path p : orderPaths){
 			System.out.println(p.patha + " " + p.dist);
-		}		
-		
-		//need to define a cross over method
-
-		//select the 4th, 5th, 6th node to be crossover
-		ArrayList<Integer> child = new ArrayList<Integer>();
-		//ArrayList<Path> bestParents = new ArrayList<Path>();
-		for(Path p : lPaths){
-			
 		}
+		System.out.println();
+
+		//do k generations of cross overs and mutations
+		int k = 500;
+		for(int i = 0; i < k; i++){
+			for(int j = 0; j < orderPaths.size()-1; j = j + 2){
+				Path tmp = createChildPath(orderPaths.get(j),orderPaths.get(j+1));
+				orderPaths.add(tmp);
+			}
+
+			orderPaths = sortPathList(orderPaths);
+
+			/*for(Path p : orderPaths){
+				System.out.println(p.patha + " " + p.dist);
+			}
+			System.out.println();*/
+			System.out.println("Generation: " + i + " " + orderPaths.get(0).dist);
+			//System.out.println();
+
+		}
+		
+		//List<Path> childPaths = new ArrayList<Path>();
+
+		
+		
+
+		//need to swap two of the indexs to simulate a mutation
+
+		/*for(Path p : orderPaths){
+			//System.out.println(p.patha);
+			Path childPath = new Path(p.patha);
+			System.out.println(childPath.patha);
+		}*/
 
 			/*for(int i = 0; i < p.patha.size(); i++){
 
@@ -190,6 +204,64 @@ public class Genetic {
 		return fin;
 	}
 
+	public static ArrayList<Path> sortPathList(List<Path> arrayList){
+		//order the arrayList array in order to find the best parents
+		ArrayList<Path> orderPaths = new ArrayList<Path>();
+		while(arrayList.size() > 0){
+			int indexShortest = -1;
+			double disShortest = Double.MAX_VALUE;
+			for(int i = 0; i < arrayList.size(); i++){
+				if(arrayList.get(i).dist < disShortest){
+					indexShortest = i;
+					disShortest = arrayList.get(i).dist;
+				}
+			}
+			orderPaths.add(arrayList.get(indexShortest));
+			arrayList.remove(indexShortest);
+		}
+		//keep only the 20 smallest paths
+		if(orderPaths.size() > 30) {
+			ArrayList<Path> finalPaths = new ArrayList<Path>();
+			for(int i = 0; i < 30; i++){
+			finalPaths.add(orderPaths.get(i));
+			}	
+			return finalPaths;
+		}
+		else {
+			return orderPaths;
+		}
+
+		
+	}
+
+	public static Path createChildPath(Path one, Path two){
+		//select the 4th, 5th, 6th node to be crossover
+		ArrayList<Integer> child = new ArrayList<Integer>();
+		
+		//ArrayList<Path> bestParents = new ArrayList<Path>();
+		for(int i = 0; i < one.patha.size() - 3; i++) {
+			child.add(one.patha.get(i));
+		}
+
+		//for(int i = 0; i < 3; i++) {
+		int i = 0;
+		int crossIndex = rnd.nextInt(child.size() - 1);
+		//System.out.println(crossIndex);
+		while(child.size() < points.size()){ //needs to equal size of input
+			if(!child.contains(two.patha.get(i))) {
+				child.add(crossIndex, two.patha.get(i));
+			}
+			i++;
+		}
+		Path tmp = new Path(child);
+		//System.out.println(tmp.patha + " " + tmp.dist);
+		tmp.swap();
+		//System.out.pirntln(tmp.patha + " " + tmp.dist);
+		//childPaths.add(tmp);
+		return tmp;
+
+	}
+
 }
 
 //Object used to represent a single point
@@ -218,12 +290,26 @@ class Path {
 	
 	Path(int[] arrayPath){
 		this.patha = new ArrayList<Integer>(Arrays.asList(Genetic.toObj(arrayPath)));
-		//this.dist = dis;
+		this.dist = calcPathDistance();
+	}
+
+	Path(ArrayList<Integer> arrayPath){
+		this.patha = new ArrayList<Integer>(arrayPath);
 		this.dist = calcPathDistance();
 	}
 
 	void setDistance(double dis){
 		this.dist = dis;
+	}
+
+	void swap(){
+		int swapIndexA = Genetic.rnd.nextInt(this.patha.size() - 1);
+		int swapIndexB = Genetic.rnd.nextInt(this.patha.size() - 1);
+		if(swapIndexA == swapIndexB){
+			swapIndexB = swapIndexB + 1;
+		}
+		Collections.swap(this.patha, swapIndexA, swapIndexB);
+		this.dist = calcPathDistance();
 	}
 
 	double calcPathDistance(){
