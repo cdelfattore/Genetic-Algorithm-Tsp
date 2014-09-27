@@ -70,6 +70,7 @@ public class Genetic {
 			edgeLengths.put(a,listDoubles);
 		}
 
+		//Print out the edge lengths
 		/*for(Integer i : edgeLengths.keySet()) {
 			for(Integer j : edgeLengths.get(i).keySet()){
 				System.out.println(i + "-" + j + " " + edgeLengths.get(i).get(j));
@@ -94,23 +95,49 @@ public class Genetic {
 		populations.add(shuffle(path));
 		//To prevent generating duplicate arrays, shuffle the previous generated path
 		//int[] prev = new int[points.size()];
-		for(int i = 1; i < 4; i++){
+		//List of Paths with distances
+		List<Path> lPaths = new ArrayList<Path>();
+		//4 can be any number
+		for(int i = 1; i <= 4; i++){
 			populations.add(shuffle(populations.get(i-1)));
 			//System.out.println(populations.get(i));
+			Path tmp = new Path(populations.get(i-1));
+			lPaths.add(tmp);
+
 		}
 
-
-		for(int[] a : populations){
-			for(int i = 0;i < a.length; i++){
-				System.out.print(a[i] + " ");
+		//order the lPaths array in order to find the best parents
+		ArrayList<Path> orderPaths = new ArrayList<Path>();
+		while(lPaths.size() > 0){
+			int indexShortest = -1;
+			double disShortest = Double.MAX_VALUE;
+			for(int i = 0; i < lPaths.size(); i++){
+				if(lPaths.get(i).dist < disShortest){
+					indexShortest = i;
+					disShortest = lPaths.get(i).dist;
+				}
 			}
-			System.out.println();
+			orderPaths.add(lPaths.get(indexShortest));
+			lPaths.remove(indexShortest);
 		}
 
-		
+		//Print to check if paths are different and inder from smallest to greatest
+		for(Path p : orderPaths){
+			System.out.println(p.patha + " " + p.dist);
+		}		
 		
 		//need to define a cross over method
 
+		//select the 4th, 5th, 6th node to be crossover
+		ArrayList<Integer> child = new ArrayList<Integer>();
+		//ArrayList<Path> bestParents = new ArrayList<Path>();
+		for(Path p : lPaths){
+			
+		}
+
+			/*for(int i = 0; i < p.patha.size(); i++){
+
+			}*/
 		//need to define a mutation method		
 
 		//need to check if paths are the same at some point
@@ -155,6 +182,14 @@ public class Genetic {
 		return str;
 	}
 
+	public static Integer[] toObj(int[] primArray){
+		Integer[] fin = new Integer[primArray.length];
+		for(int i = 0; i < primArray.length; i++){
+			fin[i] = Integer.valueOf(primArray[i]);
+		}
+		return fin;
+	}
+
 }
 
 //Object used to represent a single point
@@ -178,7 +213,32 @@ class Point {
 }
 
 class Path {
-	Path(){
+	ArrayList<Integer> patha;
+	double dist;
+	
+	Path(int[] arrayPath){
+		this.patha = new ArrayList<Integer>(Arrays.asList(Genetic.toObj(arrayPath)));
+		//this.dist = dis;
+		this.dist = calcPathDistance();
+	}
 
+	void setDistance(double dis){
+		this.dist = dis;
+	}
+
+	double calcPathDistance(){
+		double finDis = 0.0;
+		for(int i = 0; i < patha.size(); i++){
+			if(i+1 < this.patha.size()){
+				//System.out.println(Genetic.computeDistance(Genetic.points.get(patha.get(i)),Genetic.points.get(patha.get(i+1))));
+				finDis += Genetic.computeDistance(Genetic.points.get(patha.get(i)),Genetic.points.get(patha.get(i+1)));	
+			}
+			else {
+				//System.out.println(Genetic.computeDistance(Genetic.points.get(patha.get(0)),Genetic.points.get(patha.get(patha.size() - 1))));
+				finDis += Genetic.computeDistance(Genetic.points.get(patha.get(0)),Genetic.points.get(patha.get(patha.size() - 1)));	
+			}
+		}
+		//System.out.println(finDis);
+		return finDis;
 	}
 }
