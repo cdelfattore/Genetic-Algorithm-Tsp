@@ -10,7 +10,7 @@ import java.util.regex.*;
 public class Genetic {
 	public static Map<Integer,Point> points; //map of points
 	public static Map<Integer,Map<Integer,Double>> edgeLengths; //map of edge lengths for all points
-	public static Random rnd = new Random();; //Random number
+	public static Random rnd; //Random number
 
 	public static void main(String[] args) throws IOException {
 
@@ -87,30 +87,26 @@ public class Genetic {
 		}
 		System.out.println();*/
 
+		rnd = new Random();
+
 		//Create 4 random sets of strings
 		List<int[]> populations = new ArrayList<int[]>();
-
+		populations.add(shuffle(path));
 		//To prevent generating duplicate arrays, shuffle the previous generated path
 		//int[] prev = new int[points.size()];
-		for(int i = 0; i < 4; i++){
-			populations.add(shuffle(path));
-			/*try {
-				Thread.sleep(100);
-			}
-			catch(Exception e){}*/
+		for(int i = 1; i < 4; i++){
+			populations.add(shuffle(populations.get(i-1)));
+			//System.out.println(populations.get(i));
 		}
 
-		/*for(int[] a : populations){
+
+		for(int[] a : populations){
 			for(int i = 0;i < a.length; i++){
 				System.out.print(a[i] + " ");
 			}
 			System.out.println();
-		}*/
+		}
 
-		System.out.println(arrayToString(populations.get(0)));
-		System.out.println(arrayToString(populations.get(1)));
-		System.out.println(arrayToString(populations.get(2)));
-		System.out.println(arrayToString(populations.get(3)));
 		
 		
 		//need to define a cross over method
@@ -131,8 +127,11 @@ public class Genetic {
 
 	//fisher-yates algorithm to shuffle array
 	//this will be used to generate the k random populations needed for the start of the genetic algorithm
-	public static int[] shuffle (int[] arr) {
-		rnd.setSeed(System.currentTimeMillis());
+	public static int[] shuffle(int[] arra) {
+		int[] arr = new int[arra.length];
+		for(int i = 0;i < arra.length;i++){
+			arr[i] = arra[i];
+		}
 		for(int i = arr.length - 1; i > 0; i--){
 			int index = rnd.nextInt(i + 1);
 			int a = arr[index];
