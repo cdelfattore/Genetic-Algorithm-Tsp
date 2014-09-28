@@ -109,8 +109,10 @@ public class Genetic {
 
 		//order the lPaths array in order to find the best parents
 		//lpaths will now be empty
-		ArrayList<Path> orderPaths = sortPathList(lPaths);
-
+		//popSize will be the number of paths to carry on through each generation
+		int popSize = Integer.valueOf(args[3]);
+		ArrayList<Path> orderPaths = sortPathList(lPaths,popSize);
+		System.out.println("Inital Path: " + orderPaths.get(0).dist);
 		//Print to check if paths are different and inder from smallest to greatest
 		
 		/*for(Path p : orderPaths){
@@ -119,26 +121,28 @@ public class Genetic {
 		System.out.println();*/
 
 		//do k generations of cross overs and mutations
-		System.out.println(args[1]);
+		//System.out.println(args[1]);
 		int k = Integer.valueOf(args[1]);
+		int numCrossNodes = Integer.valueOf(args[2]);
+		int mutateRate = Integer.valueOf(args[4]);
 		for(int i = 0; i < k; i++){
 			int initOrderPathSize = orderPaths.size()-1;
 			for(int j = 0; j < initOrderPathSize; j++ /*= j + 2*/){
-				Path tmp = createChildPath(orderPaths.get(j),orderPaths.get(j+1));
+				Path tmp = createChildPath(orderPaths.get(j),orderPaths.get(j+1),numCrossNodes,mutateRate);
 				orderPaths.add(tmp);
 			}
 
-			orderPaths = sortPathList(orderPaths);
+			orderPaths = sortPathList(orderPaths,popSize);
 
 			/*for(Path p : orderPaths){
 				System.out.println(p.patha + " " + p.dist);
 			}
 			System.out.println();*/
-			System.out.println("Generation: " + i + " " + orderPaths.get(0).dist);
+			//System.out.println("Generation: " + i + " " + orderPaths.get(0).dist);
 			//System.out.println();
 
 		}
-		//System.out.println("Generation: " + (k - 1) + " " + orderPaths.get(0).dist);
+		System.out.println("Generation: " + k + " " + orderPaths.get(0).dist);
 	}
 
 	//Method to compute distance
@@ -186,7 +190,7 @@ public class Genetic {
 		return fin;
 	}
 
-	public static ArrayList<Path> sortPathList(List<Path> arrayList){
+	public static ArrayList<Path> sortPathList(List<Path> arrayList, int pop){
 		//order the arrayList array in order to find the best parents
 		ArrayList<Path> orderPaths = new ArrayList<Path>();
 		while(arrayList.size() > 0){
@@ -202,7 +206,7 @@ public class Genetic {
 			arrayList.remove(indexShortest);
 		}
 		//keep only the 20 smallest paths
-		int popSize = 20;
+		int popSize = pop;
 		if(orderPaths.size() > popSize) {
 			ArrayList<Path> finalPaths = new ArrayList<Path>();
 			for(int i = 0; i < popSize; i++){
@@ -217,12 +221,14 @@ public class Genetic {
 		
 	}
 
-	public static Path createChildPath(Path one, Path two){
+	public static Path createChildPath(Path one, Path two, int numCrossNodes, int mutateRate){
 		//select the 4th, 5th, 6th node to be crossover
 		ArrayList<Integer> child = new ArrayList<Integer>();
 		
 		//ArrayList<Path> bestParents = new ArrayList<Path>();
-		for(int i = 0; i < one.patha.size() - 3; i++) {
+		//xn is the amount of Crossover Nodes
+		int xn = numCrossNodes;
+		for(int i = 0; i < one.patha.size() - xn; i++) {
 			child.add(one.patha.get(i));
 		}
 
@@ -237,8 +243,19 @@ public class Genetic {
 			i++;
 		}
 		Path tmp = new Path(child);
-		//System.out.println(tmp.patha + " " + tmp.dist);
-		tmp.swap();
+		
+		//Mutate Rate
+		//muNum is a random number if this number is between one and the mutate rate
+		int muNum = (int)(Math.random() * (100));
+		//System.out.println(muNum);
+		//if mutateRate = 100, the it will always mutate
+		if(muNum >= 0 && muNum < mutateRate ){
+			//System.out.println(muNum + " is less than " + mutateRate);
+			tmp.swap();	
+		}
+		else {
+			//System.out.println(muNum + " is not less than " + mutateRate);
+		}		
 		//System.out.println(tmp.patha + " " + tmp.dist);
 		//childPaths.add(tmp);
 		return tmp;
@@ -285,11 +302,11 @@ class Path {
 		this.dist = dis;
 	}
 
+	//swap simulates the mutation
 	void swap(){
-		//int swapIndexA = Genetic.rnd.nextInt(this.patha.size() - 1);
-		//int swapIndexB = Genetic.rnd.nextInt(this.patha.size() - 1);
-		int swapIndexA = (int)(Math.random() * (9 + 1));
-		int swapIndexB = (int)(Math.random() * (9 + 1));
+		//will generate any random number between 0 and the size of points
+		int swapIndexA = (int)(Math.random() * (patha.size() - 1));
+		int swapIndexB = (int)(Math.random() * (patha.size() - 1));
 		if(swapIndexA == swapIndexB){
 			swapIndexB = swapIndexB + 1;
 		}

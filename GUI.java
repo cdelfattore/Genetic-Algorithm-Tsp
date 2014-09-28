@@ -16,19 +16,31 @@ public class GUI {
 		JPanel pOne = new JPanel(/*new GridLayout(2,1)*/);
 		pOne.setSize(new Dimension(200,200));
 
+		//Label and text field for the number of child to generate
 		JLabel genLabel = new JLabel("Number of Generations");
 		pOne.add(genLabel);
-
+		//Label and text field for the number of child to generate
 		JTextField genText = new JTextField(10);
 		pOne.add(genText);
 
+		//The amount of nodes to use in the cross over
 		JLabel sizeCrossLabel = new JLabel("Amount of nodes in CrossOver");
 		pOne.add(sizeCrossLabel);
 
 		JTextField sizeCrossText = new JTextField(10);
 		pOne.add(sizeCrossText);
 
+		JLabel sizeOfPop = new JLabel("Population Size");
+		pOne.add(sizeOfPop);
 
+		JTextField sizePopText = new JTextField(10);
+		pOne.add(sizePopText);
+
+		JLabel lblMutateRate = new JLabel("Mutation Rate");
+		pOne.add(lblMutateRate);
+
+		JTextField txtMutateRate = new JTextField(10);
+		pOne.add(txtMutateRate);
 
 		//Create a button
 		JButton submit = new JButton("Submit");
@@ -36,11 +48,13 @@ public class GUI {
 		submit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//System.out.println("hit");
-				String[] para = new String[2];
+				String[] para = new String[5];
 				para[0] = args[0];
 				para[1] = genText.getText();
+				para[2] = sizeCrossText.getText();
+				para[3] = sizePopText.getText();
+				para[4] = txtMutateRate.getText();
 
-		        
 		        try {
 		        	//g.main(para);
 		        	Genetic g = new Genetic();
@@ -67,8 +81,8 @@ public class GUI {
 			Graphics2D g2 = (Graphics2D)g;
 			int scale = 6;
 
-			for(int i=0;i< 10;i++){
-				if(i+1>=10){
+			for(int i=0;i< 300;i++){
+				if(i+1>=300){
 					g2.drawOval(i * scale, 0, 5, 5);
 					g2.drawOval(0, i * scale, 5, 5);
 					
