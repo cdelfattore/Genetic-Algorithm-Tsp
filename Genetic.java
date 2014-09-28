@@ -11,6 +11,7 @@ public class Genetic {
 	public static Map<Integer,Point> points; //map of points
 	public static Map<Integer,Map<Integer,Double>> edgeLengths; //map of edge lengths for all points
 	public static Random rnd; //Random number
+	//public static Int popSize;
 
 	public static void main(String[] args) throws IOException {
 
@@ -112,13 +113,14 @@ public class Genetic {
 
 		//Print to check if paths are different and inder from smallest to greatest
 		
-		for(Path p : orderPaths){
+		/*for(Path p : orderPaths){
 			System.out.println(p.patha + " " + p.dist);
 		}
-		System.out.println();
+		System.out.println();*/
 
 		//do k generations of cross overs and mutations
-		int k = 10000;
+		System.out.println(args[1]);
+		int k = Integer.valueOf(args[1]);
 		for(int i = 0; i < k; i++){
 			int initOrderPathSize = orderPaths.size()-1;
 			for(int j = 0; j < initOrderPathSize; j++ /*= j + 2*/){
@@ -136,28 +138,7 @@ public class Genetic {
 			//System.out.println();
 
 		}
-		
-		//List<Path> childPaths = new ArrayList<Path>();
-
-		
-		
-
-		//need to swap two of the indexs to simulate a mutation
-
-		/*for(Path p : orderPaths){
-			//System.out.println(p.patha);
-			Path childPath = new Path(p.patha);
-			System.out.println(childPath.patha);
-		}*/
-
-			/*for(int i = 0; i < p.patha.size(); i++){
-
-			}*/
-		//need to define a mutation method		
-
-		//need to check if paths are the same at some point
-		//String tmp = Arrays.toString(foo);
-		//System.out.println(arrayToString(foo));
+		//System.out.println("Generation: " + (k - 1) + " " + orderPaths.get(0).dist);
 	}
 
 	//Method to compute distance
@@ -241,7 +222,7 @@ public class Genetic {
 		ArrayList<Integer> child = new ArrayList<Integer>();
 		
 		//ArrayList<Path> bestParents = new ArrayList<Path>();
-		for(int i = 0; i < one.patha.size() - 25; i++) {
+		for(int i = 0; i < one.patha.size() - 3; i++) {
 			child.add(one.patha.get(i));
 		}
 
@@ -258,7 +239,7 @@ public class Genetic {
 		Path tmp = new Path(child);
 		//System.out.println(tmp.patha + " " + tmp.dist);
 		tmp.swap();
-		//System.out.pirntln(tmp.patha + " " + tmp.dist);
+		//System.out.println(tmp.patha + " " + tmp.dist);
 		//childPaths.add(tmp);
 		return tmp;
 
@@ -305,8 +286,10 @@ class Path {
 	}
 
 	void swap(){
-		int swapIndexA = Genetic.rnd.nextInt(this.patha.size() - 1);
-		int swapIndexB = Genetic.rnd.nextInt(this.patha.size() - 1);
+		//int swapIndexA = Genetic.rnd.nextInt(this.patha.size() - 1);
+		//int swapIndexB = Genetic.rnd.nextInt(this.patha.size() - 1);
+		int swapIndexA = (int)(Math.random() * (9 + 1));
+		int swapIndexB = (int)(Math.random() * (9 + 1));
 		if(swapIndexA == swapIndexB){
 			swapIndexB = swapIndexB + 1;
 		}

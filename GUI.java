@@ -2,9 +2,10 @@ import java.util.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.*;
 public class GUI {
 
-	public static void main(String[] args){
+	public static void main(String[] args)  {
 		JFrame frame = new JFrame("Genetic Algorithm for TSP");
 		frame.setSize(600,600);
 		frame.setLocationRelativeTo(null);
@@ -34,8 +35,18 @@ public class GUI {
 		submit.setPreferredSize(new Dimension(75,25));
 		submit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-		        System.out.println(genText.getText());
-		        System.out.println(sizeCrossText.getText());
+				//System.out.println("hit");
+				String[] para = new String[2];
+				para[0] = args[0];
+				para[1] = genText.getText();
+
+		        
+		        try {
+		        	//g.main(para);
+		        	Genetic g = new Genetic();
+		        	g.main(para);
+		        } catch (IOException ex){}
+		       
 		    }
 		});
 		
