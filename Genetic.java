@@ -118,9 +118,10 @@ public class Genetic {
 		System.out.println();
 
 		//do k generations of cross overs and mutations
-		int k = 500;
+		int k = 10000;
 		for(int i = 0; i < k; i++){
-			for(int j = 0; j < orderPaths.size()-1; j = j + 2){
+			int initOrderPathSize = orderPaths.size()-1;
+			for(int j = 0; j < initOrderPathSize; j++ /*= j + 2*/){
 				Path tmp = createChildPath(orderPaths.get(j),orderPaths.get(j+1));
 				orderPaths.add(tmp);
 			}
@@ -220,9 +221,10 @@ public class Genetic {
 			arrayList.remove(indexShortest);
 		}
 		//keep only the 20 smallest paths
-		if(orderPaths.size() > 30) {
+		int popSize = 20;
+		if(orderPaths.size() > popSize) {
 			ArrayList<Path> finalPaths = new ArrayList<Path>();
-			for(int i = 0; i < 30; i++){
+			for(int i = 0; i < popSize; i++){
 			finalPaths.add(orderPaths.get(i));
 			}	
 			return finalPaths;
@@ -239,7 +241,7 @@ public class Genetic {
 		ArrayList<Integer> child = new ArrayList<Integer>();
 		
 		//ArrayList<Path> bestParents = new ArrayList<Path>();
-		for(int i = 0; i < one.patha.size() - 3; i++) {
+		for(int i = 0; i < one.patha.size() - 25; i++) {
 			child.add(one.patha.get(i));
 		}
 
