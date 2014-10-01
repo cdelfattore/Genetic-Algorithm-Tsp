@@ -5,10 +5,13 @@ import java.awt.event.*;
 import java.io.*;
 public class GUI {
 	public static JTextArea output;
+	public static Map<Integer,Point> points;
+	public static ArrayList<Integer> drawArray;
+	public static JFrame frame;
 
 	public static void main(String[] args)  {
-		JFrame frame = new JFrame("Genetic Algorithm for TSP");
-		frame.setSize(600,600);
+		frame = new JFrame("Genetic Algorithm for TSP");
+		frame.setSize(600,700);
 		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		//frame.setLayout(new BorderLayout(5,10));
@@ -59,14 +62,25 @@ public class GUI {
 				para[3] = sizePopText.getText();
 				para[4] = txtMutateRate.getText();
 				String fun = "";
+		        Genetic g = new Genetic();
 		        try {
 		        	//g.main(para);
-		        	Genetic g = new Genetic();
 		        	fun = g.main(para);
 		        } catch (IOException ex){}
 		        //System.out.println(fun);
 		       output.setText(fun);
-		       frame.repaint();
+
+		       //Draw the points on MyPanel
+		       points = g.getPoints();
+		       drawArray = g.getDrawArray();
+		       //System.out.println(points.keySet());
+				MyPanel pointsPanel = new MyPanel();
+				pointsPanel.setPrefferredSize(new Dimension(600,400));
+				frame.add(pointsPanel,BorderLayout.NORTH);
+
+				SwingUtilities.updateComponentTreeUI(frame);
+
+		       //frame.repaint();
 		    }
 		});
 		
@@ -80,7 +94,7 @@ public class GUI {
 		output = new JTextArea();
 		output.setPreferredSize(new Dimension(500,175));
 		JScrollPane scroll = new JScrollPane (output, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-		//scroll.setPreferredSize(new Dimension(450,175));
+		scroll.setPreferredSize(new Dimension(450,175));
 		panOutput.add(scroll);
 		//panOutput.add(output);
 		frame.add(panOutput,BorderLayout.SOUTH);
@@ -88,9 +102,9 @@ public class GUI {
 
 
 		//Panel used to display points
-		MyPanel pointsPanel = new MyPanel();
+		/*MyPanel pointsPanel = new MyPanel();
 		pointsPanel.setPrefferredSize(new Dimension(600,300));
-		frame.add(pointsPanel,BorderLayout.NORTH);
+		frame.add(pointsPanel,BorderLayout.NORTH);*/
 
 		frame.setVisible(true);
 	}
@@ -98,17 +112,23 @@ public class GUI {
 	public static class MyPanel extends JPanel{
 		public void paint(Graphics g) {
 			Graphics2D g2 = (Graphics2D)g;
-			int scale = 6;
 
-			for(int i=0;i< 300;i++){
-				if(i+1>=300){
-					g2.drawOval(i * scale, 0, 5, 5);
-					g2.drawOval(0, i * scale, 5, 5);
-					
+			for(int i=0;i< points.size();i++){
+				//System.out.println(drawArray.get(i)+": " + (int)points.get(drawArray.get(i)).x + " " + (int)points.get(drawArray.get(i)).y);
+				int scale = 3;
+				if(i+1>=points.size()){
+					//System.out.println("here");
+					//System.out.println((int)points.get(drawArray.get(i)).x + " " + (int)points.get(drawArray.get(i)).y + " " + (int)points.get(drawArray.get(0)).x + " " + (int)points.get(drawArray.get(0)).y);
+					//g2.drawLine((int)points.get(drawArray.get(i)).x * 4,(int)points.get(drawArray.get(i)).x * 4, (int)points.get(drawArray.get(0)).x * 4, (int)points.get(drawArray.get(0)).y * 4);	
+					//draw the point and the line
+					g2.drawOval((int)points.get(drawArray.get(drawArray.size()-1)).x *scale, (int)points.get(drawArray.get(drawArray.size()-1)).y *scale, 5, 5);
+					g2.drawLine( (int)points.get(drawArray.get(0)).x *scale, (int)points.get(drawArray.get(0)).y*scale,(int)points.get(drawArray.get(drawArray.size()-1)).x*scale,(int)points.get(drawArray.get(drawArray.size()-1)).y*scale);
 				}
 				else {
-					g2.drawOval(i * scale, 0, 5, 5);
-					g2.drawOval(0, i * scale, 5, 5);
+					//System.out.println((int)points.get(drawArray.get(i)).x + " " + (int)points.get(drawArray.get(i)).y + " " + (int)points.get(drawArray.get(i+1)).x + " " + (int)points.get(drawArray.get(i+1)).y);
+					//draw the point and the line
+					g2.drawOval((int)points.get(drawArray.get(i)).x *scale, (int)points.get(drawArray.get(i)).y *scale, 5, 5);
+					g2.drawLine( (int)points.get(drawArray.get(i)).x *scale, (int)points.get(drawArray.get(i)).y*scale,(int)points.get(drawArray.get(i+1)).x*scale,(int)points.get(drawArray.get(i+1)).y*scale);
 				}
 			}
 		}	

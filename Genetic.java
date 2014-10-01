@@ -11,6 +11,7 @@ public class Genetic {
 	public static Map<Integer,Point> points; //map of points
 	public static Map<Integer,Map<Integer,Double>> edgeLengths; //map of edge lengths for all points
 	public static Random rnd; //Random number
+	public static ArrayList<Integer> drawArray;
 
 	public static String main(String[] args) throws IOException {
 
@@ -128,8 +129,8 @@ public class Genetic {
 		for(int i = 0; i < k; i++){
 			int initOrderPathSize = orderPaths.size()-1;
 			//inner for loops will create a child for each path
-			for(int j = 0; j < initOrderPathSize; j++){
-				for(int h = 0; h < initOrderPathSize / 2; h++){
+			for(int j = 0; j <= initOrderPathSize / 2; j++){
+				for(int h = 0; h <= initOrderPathSize / 2; h++){
 					if(h != j)	{ //if to prevent combining the same path with itself
 						Path tmp = createChildPath(orderPaths.get(j),orderPaths.get(h),numCrossNodes,mutateRate);
 						orderPaths.add(tmp);
@@ -148,6 +149,8 @@ public class Genetic {
 			//System.out.println();
 
 		}
+		drawArray = orderPaths.get(0).patha;
+
 		//System.out.println("Generation: " + k + " " + orderPaths.get(0).dist);
 		String strFinal = "The final path distance at generation " + k + " is " + orderPaths.get(0).dist + ".";
 		return strInit + "\n" + strFinal + "\n";
@@ -176,11 +179,13 @@ public class Genetic {
 		return arr;
 	}
 
-	//method to see if the paths are equal
-	/*public static void pathsEqual(int[] a, int[] b){
-		//String strA = 
-		int[] newA = 
-	}*/
+	public static Map<Integer,Point> getPoints(){
+		return points;
+	}
+
+	public static ArrayList<Integer> getDrawArray(){
+		return drawArray;
+	}
 
 	public static String arrayToString (int[] a){
 		String str = "";
