@@ -1,3 +1,8 @@
+/* Assignment: Project 4 - TSP – Genetic Algorithm
+** Name: Chris Del Fattore
+** Email: crdelf01@cardmail.louisville.edu
+** Description: GUI.java is used to print the output and the results from the Genetic.java class
+*/
 import java.util.*;
 import javax.swing.*;
 import java.awt.*;
