@@ -132,11 +132,16 @@ public class Genetic {
 			for(int j = 0; j <= initOrderPathSize / 2; j++){
 				for(int h = 0; h <= initOrderPathSize / 2; h++){
 					if(h != j)	{ //if to prevent combining the same path with itself
-						Path tmp = createChildPath(orderPaths.get(j),orderPaths.get(h),numCrossNodes,mutateRate);
-						orderPaths.add(tmp);
+						if(!compareArrayList(orderPaths.get(j),orderPaths.get(h))){
+							//System.out.println("not the same list");
+							Path tmp = createChildPath(orderPaths.get(j),orderPaths.get(h),numCrossNodes,mutateRate);
+							orderPaths.add(tmp);	
+						}
+						/*else {
+							System.out.println("same list");
+						}*/
 					}
 				}
-				
 			}
 
 			orderPaths = sortPathList(orderPaths,popSize);
@@ -154,6 +159,16 @@ public class Genetic {
 		//System.out.println("Generation: " + k + " " + orderPaths.get(0).dist);
 		String strFinal = "The final path distance at generation " + k + " is " + orderPaths.get(0).dist + ".";
 		return strInit + "\n" + strFinal + "\n";
+	}
+
+	//return true if they are the same list
+	public static Boolean compareArrayList(Path a, Path b){
+		for(int i = 0; i < a.patha.size();i++){
+			if(a.patha.get(i) != b.patha.get(i)) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	//Method to compute distance
