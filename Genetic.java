@@ -1,7 +1,7 @@
 /* Assignment: Project 4 - TSP – Genetic Algorithm
 ** Name: Chris Del Fattore
 ** Email: crdelf01@cardmail.louisville.edu
-** Description: 
+** Description: Implementation of a Genetic algorithm for TSP Problem
 */
 import java.io.*;
 import java.util.*;
@@ -11,7 +11,7 @@ public class Genetic {
 	public static Map<Integer,Point> points; //map of points
 	public static Map<Integer,Map<Integer,Double>> edgeLengths; //map of edge lengths for all points
 	public static Random rnd; //Random number
-	public static ArrayList<Integer> drawArray;
+	public static ArrayList<Integer> drawArray; //array of the points in order to be draw on the GUI
 
 	public static String main(String[] args) throws IOException {
 
@@ -91,7 +91,7 @@ public class Genetic {
 
 		rnd = new Random();
 
-		//Create 4 random sets of strings
+		//Create 4 random array of integers
 		List<int[]> populations = new ArrayList<int[]>();
 		populations.add(shuffle(path));
 		//To prevent generating duplicate arrays, shuffle the previous generated path
@@ -130,7 +130,7 @@ public class Genetic {
 			int initOrderPathSize = orderPaths.size()-1;
 			//inner for loops will create a child for each path
 			for(int j = 0; j <= initOrderPathSize / 2; j++){
-				for(int h = 0; h <= initOrderPathSize / 2; h++){
+				for(int h = 0; h <= initOrderPathSize; h++){
 					if(h != j)	{ //if to prevent combining the same path with itself
 						if(!compareArrayList(orderPaths.get(j),orderPaths.get(h))){
 							//System.out.println("not the same list");
@@ -249,18 +249,17 @@ public class Genetic {
 		
 	}
 
-	public static Path createChildPath(Path one, Path two, int numCrossNodes, int mutateRate){
-		//select the 4th, 5th, 6th node to be crossover
+	public static Path createChildPath(Path two, Path one, int numCrossNodes, int mutateRate){
+		//array to hold the child path
+		//points from path one and two will be used to populate the child arraylist
 		ArrayList<Integer> child = new ArrayList<Integer>();
-		
-		//ArrayList<Path> bestParents = new ArrayList<Path>();
 		//xn is the amount of Crossover Nodes
-		int xn = numCrossNodes;
-		for(int i = 0; i < one.patha.size() - xn; i++) {
+		int startIndex = rnd.nextInt(one.patha.size() - numCrossNodes);
+		//System.out.println(startIndex);
+		for(int i = startIndex; i < one.patha.size(); i++) {
 			child.add(one.patha.get(i));
 		}
 
-		//for(int i = 0; i < 3; i++) {
 		int i = 0;
 		int crossIndex = rnd.nextInt(child.size() - 1);
 		//System.out.println(crossIndex);

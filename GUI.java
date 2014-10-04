@@ -51,9 +51,6 @@ public class GUI {
 		JTextField txtMutateRate = new JTextField(10);
 		pOne.add(txtMutateRate);
 
-
-
-
 		//Create a button
 		JButton submit = new JButton("Submit");
 		submit.setPreferredSize(new Dimension(75,25));
@@ -103,13 +100,6 @@ public class GUI {
 		panOutput.add(scroll);
 		//panOutput.add(output);
 		frame.add(panOutput,BorderLayout.SOUTH);
-
-
-
-		//Panel used to display points
-		/*MyPanel pointsPanel = new MyPanel();
-		pointsPanel.setPrefferredSize(new Dimension(600,300));
-		frame.add(pointsPanel,BorderLayout.NORTH);*/
 
 		frame.setVisible(true);
 	}
