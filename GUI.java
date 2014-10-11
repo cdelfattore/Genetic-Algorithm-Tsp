@@ -1,7 +1,7 @@
 /* Assignment: Project 4 - TSP – Genetic Algorithm
 ** Name: Chris Del Fattore
 ** Email: crdelf01@cardmail.louisville.edu
-** Description: GUI.java is used to print the output and the results from the Genetic.java class
+** Description: GUI.java is used to print the output and the results from the Genetic.java class in a JFrame
 */
 import java.util.*;
 import javax.swing.*;
@@ -15,6 +15,8 @@ public class GUI {
 	public static JFrame frame;
 
 	public static void main(String[] args)  {
+
+		//create a jframe to hold all of the buttons and panels needed
 		frame = new JFrame("Genetic Algorithm for TSP");
 		frame.setSize(600,700);
 		frame.setLocationRelativeTo(null);
@@ -36,24 +38,27 @@ public class GUI {
 		JLabel sizeCrossLabel = new JLabel("Amount of nodes in CrossOver");
 		pOne.add(sizeCrossLabel);
 
+		//Input box for the size of the cross over nodes
 		JTextField sizeCrossText = new JTextField(10);
 		pOne.add(sizeCrossText);
 
+		//Input box and label for the size of the population
 		JLabel sizeOfPop = new JLabel("Population Size");
 		pOne.add(sizeOfPop);
-
 		JTextField sizePopText = new JTextField(10);
 		pOne.add(sizePopText);
 
+		//input box and label for the mutation rate.
 		JLabel lblMutateRate = new JLabel("Mutation Rate");
 		pOne.add(lblMutateRate);
-
 		JTextField txtMutateRate = new JTextField(10);
 		pOne.add(txtMutateRate);
+
 
 		//Create a button
 		JButton submit = new JButton("Submit");
 		submit.setPreferredSize(new Dimension(75,25));
+		//action listener used to pass the values entered in the text fields to the genetic.java main method.
 		submit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//System.out.println("hit");
@@ -64,7 +69,7 @@ public class GUI {
 				para[3] = sizePopText.getText();
 				para[4] = txtMutateRate.getText();
 				String fun = "";
-		        Genetic g = new Genetic();
+		        Genetic g = new Genetic(); // new instance of the genetic class
 		        try {
 		        	//g.main(para);
 		        	fun = g.main(para);
@@ -79,31 +84,31 @@ public class GUI {
 				MyPanel pointsPanel = new MyPanel();
 				pointsPanel.setPrefferredSize(new Dimension(600,400));
 				frame.add(pointsPanel,BorderLayout.NORTH);
-
+				//refresh the jframe to update the plotted points and the shortest path distance.
 				SwingUtilities.updateComponentTreeUI(frame);
-
-		       //frame.repaint();
 		    }
 		});
 		
-
+		//add the submit button and jpanel to the jframe
 		pOne.add(submit,BorderLayout.SOUTH);
 		frame.add(pOne,BorderLayout.CENTER);
 
-		//Output Panel
+		//Output Panel used for displaying the shortest path
 		JPanel panOutput = new JPanel();
-		//panOutput.setPreferredSize(new Dimension(600,100));
+		//text area on the jpanel.
 		output = new JTextArea();
 		output.setPreferredSize(new Dimension(500,175));
 		JScrollPane scroll = new JScrollPane (output, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		scroll.setPreferredSize(new Dimension(450,175));
 		panOutput.add(scroll);
-		//panOutput.add(output);
+		//add the panel to the jframe
 		frame.add(panOutput,BorderLayout.SOUTH);
 
 		frame.setVisible(true);
 	}
 
+	//MyPanel is used to draw the points and edges on the GUI.java main interface.
+	//The path displyed is the shortest path found from the Genetic.java program
 	public static class MyPanel extends JPanel{
 		public void paint(Graphics g) {
 			Graphics2D g2 = (Graphics2D)g;

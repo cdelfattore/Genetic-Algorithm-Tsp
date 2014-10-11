@@ -82,26 +82,18 @@ public class Genetic {
 			System.out.println(path[i]);
 		}*/
 
-		//Create k-randomly generated states
-		/*int[] foo = shuffle(path);
-		for(int i = 0;i < foo.length; i++){
-			System.out.print(foo[i] + " ");
-		}
-		System.out.println();*/
-
 		rnd = new Random();
 
 		//Create 4 random array of integers
 		List<int[]> populations = new ArrayList<int[]>();
 		populations.add(shuffle(path));
 		//To prevent generating duplicate arrays, shuffle the previous generated path
-		//int[] prev = new int[points.size()];
+		
 		//List of Paths with distances
 		List<Path> lPaths = new ArrayList<Path>();
-		//4 can be any number
+		//create 4 arrays of random intergers
 		for(int i = 1; i <= 4; i++){
 			populations.add(shuffle(populations.get(i-1)));
-			//System.out.println(populations.get(i));
 			Path tmp = new Path(populations.get(i-1));
 			lPaths.add(tmp);
 
@@ -113,8 +105,6 @@ public class Genetic {
 		int popSize = Integer.valueOf(args[3]);
 		ArrayList<Path> orderPaths = sortPathList(lPaths,popSize);
 		String strInit = "The inital path distance is " + orderPaths.get(0).dist + ".";
-		//System.out.println(strInit);
-		//Print to check if paths are different and inder from smallest to greatest
 		
 		/*for(Path p : orderPaths){
 			System.out.println(p.patha + " " + p.dist);
@@ -122,41 +112,44 @@ public class Genetic {
 		System.out.println();*/
 
 		//do k generations of cross overs and mutations
-		//System.out.println(args[1]);
+		//args array gets input from the GUI.java class
 		int k = Integer.valueOf(args[1]);
 		int numCrossNodes = Integer.valueOf(args[2]);
 		int mutateRate = Integer.valueOf(args[4]);
 		for(int i = 0; i < k; i++){
 			int initOrderPathSize = orderPaths.size()-1;
-			//inner for loops will create a child for each path
-			for(int j = 0; j <= initOrderPathSize / 2; j++){
-				for(int h = 0; h <= initOrderPathSize; h++){
+			//j represents the smaller paths in the array, only use the first half of these
+			//could change this to a fixed number
+			for(int j = 0; j <= initOrderPathSize / 2; j++){ 
+				//h represents all of the nodes in the list,
+				for(int h = 0; h <= initOrderPathSize; h++){ 
 					if(h != j)	{ //if to prevent combining the same path with itself
 						if(!compareArrayList(orderPaths.get(j),orderPaths.get(h))){
-							//System.out.println("not the same list");
+							//Create a child path by calling the create child path.
 							Path tmp = createChildPath(orderPaths.get(j),orderPaths.get(h),numCrossNodes,mutateRate);
+							//add the new path to orderPaths, will sort the entire list after the for loop terminates
 							orderPaths.add(tmp);	
 						}
-						/*else {
-							System.out.println("same list");
-						}*/
 					}
 				}
 			}
-
+			//sort the orderPaths list so the smaller length paths are at the beginning of the list
 			orderPaths = sortPathList(orderPaths,popSize);
 
 			/*for(Path p : orderPaths){
 				System.out.println(p.patha + " " + p.dist);
 			}
 			System.out.println();*/
-			//System.out.println("Generation: " + i + " " + orderPaths.get(0).dist);
-			//System.out.println();
+			//System.out.println(orderPaths.get(0).dist);
+			
+
 
 		}
+		//draw array is the path with the shortest distance, this path will be draw on the iframe in GUI.java
 		drawArray = orderPaths.get(0).patha;
 
 		//System.out.println("Generation: " + k + " " + orderPaths.get(0).dist);
+		//return the intial path length and the smallest path length.
 		String strFinal = "The final path distance at generation " + k + " is " + orderPaths.get(0).dist + ".";
 		return strInit + "\n" + strFinal + "\n";
 	}
@@ -194,14 +187,15 @@ public class Genetic {
 		return arr;
 	}
 
+	//simply get the map of points
 	public static Map<Integer,Point> getPoints(){
 		return points;
 	}
-
+	//get the array to be draw on the JFrame
 	public static ArrayList<Integer> getDrawArray(){
 		return drawArray;
 	}
-
+	//converts an array to a string
 	public static String arrayToString (int[] a){
 		String str = "";
 		for(int i = 0;i < a.length; i++){
@@ -209,7 +203,7 @@ public class Genetic {
 		}
 		return str;
 	}
-
+	//takes an array of int s and converts it to a array of Integer Objects
 	public static Integer[] toObj(int[] primArray){
 		Integer[] fin = new Integer[primArray.length];
 		for(int i = 0; i < primArray.length; i++){
@@ -233,7 +227,7 @@ public class Genetic {
 			orderPaths.add(arrayList.get(indexShortest));
 			arrayList.remove(indexShortest);
 		}
-		//keep only the 20 smallest paths
+		//keep only the k smallest paths, pop is determined by the population size entered in the text box in GUI.java
 		int popSize = pop;
 		if(orderPaths.size() > popSize) {
 			ArrayList<Path> finalPaths = new ArrayList<Path>();
@@ -249,11 +243,13 @@ public class Genetic {
 		
 	}
 
+	//method used to create child paths
 	public static Path createChildPath(Path two, Path one, int numCrossNodes, int mutateRate){
 		//array to hold the child path
 		//points from path one and two will be used to populate the child arraylist
 		ArrayList<Integer> child = new ArrayList<Integer>();
-		//xn is the amount of Crossover Nodes
+		//xn is the amount of Crossover Nodes (nodes = points)
+		//grab the nodes starting at a random integer startIndex
 		int startIndex = rnd.nextInt(one.patha.size() - numCrossNodes);
 		//System.out.println(startIndex);
 		for(int i = startIndex; i < one.patha.size(); i++) {
@@ -261,6 +257,7 @@ public class Genetic {
 		}
 
 		int i = 0;
+		//Add the nodes at a random index - crossIndex
 		int crossIndex = rnd.nextInt(child.size() - 1);
 		//System.out.println(crossIndex);
 		while(child.size() < points.size()){ //needs to equal size of input
@@ -274,7 +271,7 @@ public class Genetic {
 		//Mutate Rate
 		//muNum is a random number if this number is between one and the mutate rate
 		int muNum = (int)(Math.random() * (100));
-		//System.out.println(muNum);
+		
 		//if mutateRate = 100, the it will always mutate
 		if(muNum >= 0 && muNum < mutateRate ){
 			//System.out.println(muNum + " is less than " + mutateRate);
@@ -311,22 +308,20 @@ class Point {
 	}
 }
 
+//objected used to represent a path
 class Path {
 	ArrayList<Integer> patha;
 	double dist;
 	
+	//construct a path using a array of int
 	Path(int[] arrayPath){
 		this.patha = new ArrayList<Integer>(Arrays.asList(Genetic.toObj(arrayPath)));
 		this.dist = calcPathDistance();
 	}
-
+	//Construct using and Arraylist of Integer objects
 	Path(ArrayList<Integer> arrayPath){
 		this.patha = new ArrayList<Integer>(arrayPath);
 		this.dist = calcPathDistance();
-	}
-
-	void setDistance(double dis){
-		this.dist = dis;
 	}
 
 	//swap simulates the mutation
@@ -334,13 +329,16 @@ class Path {
 		//will generate any random number between 0 and the size of points
 		int swapIndexA = (int)(Math.random() * (patha.size() - 1));
 		int swapIndexB = (int)(Math.random() * (patha.size() - 1));
+		//if the are the same make swapIndexB slightly bigger
 		if(swapIndexA == swapIndexB){
 			swapIndexB = swapIndexB + 1;
 		}
+		//Swap the points in the arraylist
 		Collections.swap(this.patha, swapIndexA, swapIndexB);
 		this.dist = calcPathDistance();
 	}
 
+	//method used to calculate the paths distance
 	double calcPathDistance(){
 		double finDis = 0.0;
 		for(int i = 0; i < patha.size(); i++){
